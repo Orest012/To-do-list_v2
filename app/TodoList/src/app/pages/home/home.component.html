@@ -1,0 +1,115 @@
+<div class="header">
+  <h1>Task Manager</h1>
+  <button (click)="onLogout()">Logout</button>
+</div>
+
+<div class="content">
+  <div class="form-container">
+    <label for="categorySearch">Search by Category:</label>
+    <select id="categorySearch" [(ngModel)]="selectedCategory" (change)="filterTasks()">
+      <option value="">All Categories</option>
+      <option *ngFor="let category of categories" [value]="category.categoryName">
+        {{ category.categoryName }}
+      </option>
+    </select>
+
+    <label for="categoryNameSearch">Search by Category Name:</label>
+    <input 
+      type="text" 
+      id="categoryNameSearch" 
+      [(ngModel)]="categorySearch" 
+      (input)="filterByCategoryName()" 
+      placeholder="Enter category name to search" 
+    />
+  </div>
+
+  <div class="task-list">
+    <div *ngIf="tasks.length > 0; else noTasks">
+      <h3>Tasks:</h3>
+      <ul>
+        <li *ngFor="let task of getPaginatedTasks()">
+          <input 
+            type="checkbox" 
+            [(ngModel)]="task.isCompleted" 
+            (change)="onTaskComplete(task)" 
+          />
+          <span [ngStyle]="{'text-decoration': task.isCompleted ? 'line-through' : 'none'}">
+            <strong>{{ task.title }}</strong>: {{ task.description }} : {{ task.dueDate | date:'dd-MM-yyyy' }}
+            <span *ngIf="task.categoryName">({{ task.categoryName }})</span>
+          </span>
+          <div>
+            <button (click)="onDeleteTask(task.taskId)">Delete</button>
+            <button (click)="onEditTask(task)">Edit</button>
+          </div>
+        </li>
+      </ul>
+
+      <div class="pagination-controls">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+      </div>
+    </div>
+    <button (click)="AddTask()">Add Task</button>
+
+    <ng-template #noTasks>
+      <p>No tasks available. Click "Load Tasks" to fetch tasks.</p>
+    </ng-template>
+  </div>
+</div>
+
+<div *ngIf="showCreateForm" class="modal">
+  <h3>Create New Task</h3>
+  <form (ngSubmit)="onCreateTask(newTask)">
+    <label>
+      Title:
+      <input type="text" [(ngModel)]="newTask.title" name="title" required />
+    </label>
+
+    <label>
+      Description:
+      <textarea [(ngModel)]="newTask.description" name="description"></textarea>
+    </label>
+
+    <label>
+      Due Date:
+      <input type="date" [(ngModel)]="newTask.dueDate" name="dueDate" />
+    </label>
+
+    <!-- <label>
+      User ID:
+      <input type="number" [(ngModel)]="newTask.userId" name="userId" required />
+    </label>
+
+    <label>
+      Category ID:
+      <input type="number" [(ngModel)]="newTask.categoryId" name="categoryId" />
+    </label> -->
+
+    <button type="submit">Create Task</button>
+    <button type="button" (click)="showCreateForm = false;">Cancel</button>
+  </form>
+</div>
+
+<div *ngIf="showForm" class="modal">
+  <form (ngSubmit)="onSubmit()">
+    <label for="title">Name:</label>
+    <input type="text" id="title" [(ngModel)]="selectedTask.title" name="title" required />
+
+    <label for="description">Description:</label>
+    <textarea id="description" [(ngModel)]="selectedTask.description" name="description"></textarea>
+
+    <label for="dueDate">Deadline:</label>
+    <input type="date" id="dueDate" [(ngModel)]="selectedTask.dueDate" name="dueDate" />
+
+    <label for="categoryName">Select Category:</label>
+    <select id="categoryName" [(ngModel)]="selectedTask.categoryName" name="categoryName">
+      <option *ngFor="let category of categories" [value]="category.categoryName">
+        {{ category.categoryName }}
+      </option>
+    </select>
+
+    <button type="submit">Save</button>
+    <button type="button" (click)="showForm = false;">Cancel</button>
+  </form>
+</div>

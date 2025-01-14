@@ -1,0 +1,178 @@
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f3f3f3;
+    color: #333;
+  }
+
+  .header {
+    background-color: #0078D4;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  .header button {
+    background-color: white;
+    color: #0078D4;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+
+  .header button:hover {
+    background-color: #e6f4ff;
+  }
+
+  .content {
+    margin: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-container label {
+    font-size: 14px;
+    color: #555;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .form-container input, .form-container select, .form-container textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  button {
+    background-color: #0078D4;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #005a9e;
+  }
+
+  .task-list ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .task-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 10px;
+    border-bottom: 1px solid #e6e6e6;
+  }
+
+  .task-list li:hover {
+    background-color: #f9f9f9;
+  }
+
+  .task-list li span {
+    flex: 1;
+    margin-left: 10px;
+  }
+
+  .task-list input[type="checkbox"] {
+    margin-right: 10px;
+  }
+
+  .pagination-controls {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .pagination-controls span {
+    margin: 0 10px;
+    color: #0078D4;
+    font-weight: bold;
+  }
+
+  .modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+  }
+  
+  .modal h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+  }
+  
+  .modal form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modal label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  
+  .modal input, .modal textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .modal textarea {
+    height: 100px;
+  }
+  
+  .modal button {
+    background-color: #0078D4;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  
+  .modal button:hover {
+    background-color: #005a9e;
+  }
+  
+  .modal button[type="button"] {
+    background-color: #e6e6e6;
+    color: #333;
+    margin-left: 10px;
+  }
+  
+  .modal button[type="button"]:hover {
+    background-color: #ccc;
+  }
+  
