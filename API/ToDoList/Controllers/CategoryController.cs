@@ -8,7 +8,7 @@ namespace ToDoList.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="User")]
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;

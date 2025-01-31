@@ -7,30 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ToDoList.Migrations
 {
     /// <inheritdoc />
-    public partial class init2 : Migration
+    public partial class NewModels : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Email = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Password = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Username = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
             migrationBuilder.CreateTable(
                 name: "Assignments",
                 columns: table => new
@@ -44,7 +25,8 @@ namespace ToDoList.Migrations
                     IsCompleted = table.Column<bool>(type: "tinyint(1)", nullable: true),
                     DueDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: true),
+                    CategoryName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
@@ -103,9 +85,6 @@ namespace ToDoList.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
-
-            migrationBuilder.DropTable(
-                name: "Users");
         }
     }
 }

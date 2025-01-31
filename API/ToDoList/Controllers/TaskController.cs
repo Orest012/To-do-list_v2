@@ -9,7 +9,7 @@ namespace ToDoList.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "User")]
+    [Authorize]
     public class TaskController : Controller
     {
         private readonly ITaskService _taskService;
@@ -23,7 +23,10 @@ namespace ToDoList.Controllers
         [Route("/GetAllTasks")]
         public IActionResult GetAllTasks()
         {
-            var tasks = _taskService.GetAllTasks();
+            var userId = User.FindFirst("UserId")?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized("Не вдалося ідентифікувати користувача");
+
+            var tasks = _taskService.GetAllTasks(userId);
             return Ok(tasks);
         }
 
@@ -46,7 +49,10 @@ namespace ToDoList.Controllers
         [Route("/GetShortInformation")]
         public async Task<IActionResult> GetShortInformation()
         {
-            var tasks = await _taskService.GetShortInformation();
+            var userId = User.FindFirst("UserId")?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized("Не вдалося ідентифікувати користувача");
+
+            var tasks = await _taskService.GetShortInformation(userId);
             return Ok(tasks);
         }
 
@@ -70,7 +76,10 @@ namespace ToDoList.Controllers
         public async Task<IActionResult> CreateTask([FromBody] AssignmentCreateDTO newTaskDto) {
             try
             {
-                var createdTask = await _taskService.CreateTask(newTaskDto);
+                var userId = User.FindFirst("UserId")?.Value;
+                if (string.IsNullOrEmpty(userId)) return Unauthorized("Не вдалося ідентифікувати користувача");
+
+                var createdTask = await _taskService.CreateTask(newTaskDto, Convert.ToInt32(userId));
                 return CreatedAtAction(nameof(GetTaskById), new { id = createdTask.TaskId }, createdTask);
             }
             catch (Exception ex)

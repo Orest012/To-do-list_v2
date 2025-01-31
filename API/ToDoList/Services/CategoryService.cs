@@ -11,8 +11,8 @@ namespace ToDoList.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly AppDbContext _dbContext;
-        public CategoryService(AppDbContext dbContext)
+        private readonly ApplicationDbContext _dbContext;
+        public CategoryService(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }

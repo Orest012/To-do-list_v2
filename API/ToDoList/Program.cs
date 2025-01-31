@@ -1,9 +1,7 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Text;
 using ToDoList.Data;
 using ToDoList.Interfaces;
 using ToDoList.Services;
@@ -14,69 +12,56 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost",
         builder => builder
-            .WithOrigins("http://localhost:4200")  
-            .AllowAnyMethod()  
-            .AllowAnyHeader());  
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<ITaskService, TaskService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
+//DataBase
+var connection = builder.Configuration.GetConnectionString("MySqlConn");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(connection, ServerVersion.AutoDetect(connection)));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-{
-    options.Password.RequiredLength = 6;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireDigit = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireLowercase = false;
-})
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
 
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Secret"]);
 
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
+}).AddJwtBearer(options =>
 {
+    options.RequireHttpsMetadata = true;
+    options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = false,
-        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        ValidateLifetime = true
     };
 });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
-});
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
 
-var connectionString = builder.Configuration.GetConnectionString("MySqlConn"); ;
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-});
+// ƒодаЇмо Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<TokenService>();
 
-
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
 
 var app = builder.Build();
+app.UseCors("AllowLocalhost");
 
-app.UseCors("AllowLocalhost");  
-
+// якщо в режим≥ розробки, вмикаЇмо Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -84,10 +69,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication();  
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

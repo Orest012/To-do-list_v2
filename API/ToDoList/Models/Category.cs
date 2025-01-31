@@ -11,11 +11,11 @@ public partial class Category
     public int CategoryId { get; set; }
 
     [Required]
-    [MaxLength(255)] // Обмеження довжини для CategoryName
+    [MaxLength(255)] 
     public string CategoryName { get; set; } = null!;
 
     [Required]
-    [ForeignKey("User")] // Вказує, що це зовнішній ключ
+    [ForeignKey("User")] 
     public int UserId { get; set; }
 
     public virtual User User { get; set; } = null!;

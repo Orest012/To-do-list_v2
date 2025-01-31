@@ -11,14 +11,14 @@ namespace ToDoList.Services
 {
     public class TaskService : ITaskService
     {
-        private readonly AppDbContext _dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
-        public TaskService(AppDbContext dbContext)
+        public TaskService(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<AssignmentReadDTO> CreateTask(AssignmentCreateDTO newTask)
+        public async Task<AssignmentReadDTO> CreateTask(AssignmentCreateDTO newTask, int userId)
         {
 
             var newAssignment = new Assignment
@@ -27,7 +27,7 @@ namespace ToDoList.Services
                 Description = newTask.Description,
                 DueDate = newTask.DueDate,
                 IsCompleted = false,
-                UserId = 1,
+                UserId = userId,
                 //CategoryId = 1,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -36,7 +36,7 @@ namespace ToDoList.Services
             _dbContext.Assignments.Add(newAssignment);
             await _dbContext.SaveChangesAsync();
 
-            var user = _dbContext.Users.FirstOrDefault(u => u.UserId == 1);
+            var user = _dbContext.Users.FirstOrDefault(u => u.UserId == userId);
 
             return new AssignmentReadDTO
             {
@@ -64,9 +64,10 @@ namespace ToDoList.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public List<AssignmentReadDTO> GetAllTasks()
+        public List<AssignmentReadDTO> GetAllTasks(string id)
         {
-            return _dbContext.Assignments
+
+            return _dbContext.Assignments.Where(u=> u.UserId == Convert.ToInt32(id))
                 .Include(a => a.User) 
                 .Select(a => new AssignmentReadDTO
                 {
@@ -84,9 +85,9 @@ namespace ToDoList.Services
                 .ToList();
         }
 
-        public async Task<List<AssignmentSummaryDTO>> GetShortInformation()
+        public async Task<List<AssignmentSummaryDTO>> GetShortInformation(string id)
         {
-            return await _dbContext.Assignments.Select(u => new AssignmentSummaryDTO
+            return await _dbContext.Assignments.Where(u => u.UserId == Convert.ToInt32(id)).Select(u => new AssignmentSummaryDTO
             {
                 TaskId = u.TaskId,
                 Title = u.Title,
